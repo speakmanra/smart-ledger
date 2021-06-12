@@ -1,0 +1,23 @@
+
+$blue1: #3d4a58 !default;
+$blue2: #3d4a58 !default;
+$blue3: #3d4a58 !default;
+$blue4: #3d4a58 !default;
+$blue5: #3d4a58 !default;
+
+@import "~@blueprintjs/core/src/blueprint.scss";
+
+html {
+  div {
+    color: #e7dbda;
+  }
+  background-color: #0f1318;
+}
+
+.App {
+  text-align: center;
+}
+
+li {
+  margin: 16px;
+}

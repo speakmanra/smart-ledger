@@ -1,0 +1,27 @@
+.table-container {
+  display: flex;
+  justify-content: center;
+  table {
+    .time-col {
+      width: 100px;
+    }
+    .name-col {
+      @media only screen and (max-width: 600px) {
+        display: none;
+      }
+      max-width: 150px;
+      font-weight: bold;
+    }
+    .amount, .fee {
+      width: 225px;
+    }
+  }
+}
+
+.bp3-running-text table td, table.bp3-html-table td {
+  color: #e7dbda !important;
+}
+
+.bp3-running-text table th, table.bp3-html-table th {
+  color: #e7dbda !important;
+}

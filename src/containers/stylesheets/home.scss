@@ -1,0 +1,35 @@
+.home-container {
+  margin: 80px 0;
+}
+
+.search-container {
+  display: block;
+  margin: 24px auto;
+  width: 75%;
+}
+
+.loading {
+  display: flex;
+  height: 50vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-address-message {
+  display: flex;
+  flex-direction: column;
+  height: 30vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  padding: 0 24px;
+  div {
+    margin-top: 24px;
+  }
+}
+
+.fees {
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;;
+}
