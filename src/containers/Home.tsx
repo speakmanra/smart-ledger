@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { InputGroup, Button, Icon, Spinner } from '@blueprintjs/core';
 import TxnTable from '../components/TxnTable';
+import Filters from '../components/Filters';
 import './stylesheets/home.scss'
 
 
@@ -13,11 +14,12 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const [startBlock, setStartBlock] = useState('1');
+  const [endBlock, setEndBlock] = useState('99999999');
+  const [blockchain, setBlockchain] = useState('ether');
 
-  const apiKey = '2MDRS9PJ1M4TYXHIKMIPP5WQF9F1A85ITG';
-  const baseUrl = 'https://api.bscscan.com/api?module=account&action=tokentx';
-  let startBlock = '1';
-  let endBlock = '99999999';
+  const bscApiKey = '2MDRS9PJ1M4TYXHIKMIPP5WQF9F1A85ITG';
+  const ethApiKey = 'FRGT3H8E4TFNM3G55MT1QHMBV7KP2DRDXT';
   let sortOption = 'asc';
 
   const searchIcon = (
@@ -32,7 +34,9 @@ export default function Home() {
     e.preventDefault();
     e.currentTarget.blur();
     setHasSearched(true);
-    setQuery(`${baseUrl}&address=${walletAddress}&startblock=${startBlock}&endblock=${endBlock}&sort=${sortOption}&apikey=${apiKey}`)
+    const apiKey = blockchain === 'bsc' ? bscApiKey : ethApiKey;
+    const domain = blockchain === 'bsc' ? 'com' : 'io';
+    setQuery(`https://api.${blockchain}scan.${domain}/api?module=account&action=tokentx&address=${walletAddress}&startblock=${startBlock}&endblock=${endBlock}&sort=${sortOption}&apikey=${apiKey}`)
   }
 
   useEffect(() => {
@@ -92,6 +96,13 @@ export default function Home() {
           value={walletAddress}
           onChange={e => setWalletAddress(e.target.value)} />
         </form>
+      </div>
+      <div className="filters">
+        <Filters 
+          changeBlockchain={(selection: any) => setBlockchain(selection)} 
+          changeStartingBlock={(selection: any) => setStartBlock(selection)} 
+          changeEndingBlock={(selection: any) => setEndBlock(selection)}
+        />
       </div>
       {showInputAddressMessage && <div className="input-address-message">
         Enter a wallet address to see your transactions.
