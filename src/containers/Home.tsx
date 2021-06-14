@@ -18,8 +18,8 @@ export default function Home() {
   const [endBlock, setEndBlock] = useState('99999999');
   const [blockchain, setBlockchain] = useState('ether');
 
-  const bscApiKey = '2MDRS9PJ1M4TYXHIKMIPP5WQF9F1A85ITG';
-  const ethApiKey = 'FRGT3H8E4TFNM3G55MT1QHMBV7KP2DRDXT';
+  const bscApiKey = process.env.REACT_APP_BSC_API_KEY;
+  const ethApiKey = process.env.REACT_APP_ETH_API_KEY;
   let sortOption = 'asc';
 
   const searchIcon = (
