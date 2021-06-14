@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { useHistory, withRouter } from 'react-router-dom';
-import { Navbar, Button, Alignment, Drawer, DrawerSize, Classes, Icon } from '@blueprintjs/core';
+import { useHistory } from 'react-router-dom';
+import { Navbar, Button, Alignment, Drawer, Classes, Icon } from '@blueprintjs/core';
+import img from '../assets/logo512.png'
 import './stylesheets/navbar.scss';
 
 export default function Nav() {
@@ -37,6 +38,7 @@ export default function Nav() {
           <Navbar.Heading>{ activeRoute.wallets ? 'Wallets' : activeRoute.globalStats ? 'Global Stats' : activeRoute.donations ? 'Donations' : 'Smart Ledger'}</Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
+          <img onClick={() => navigateTo('/')} src={img} alt="logo" />
         </Navbar.Group>
       </Navbar>
       <Drawer 
