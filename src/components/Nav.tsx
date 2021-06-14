@@ -1,17 +1,65 @@
 import React, { useState } from 'react'
-import { Navbar, Button, Alignment } from '@blueprintjs/core'
+import { useHistory, withRouter } from 'react-router-dom';
+import { Navbar, Button, Alignment, Drawer, DrawerSize, Classes, Icon } from '@blueprintjs/core';
+import './stylesheets/navbar.scss';
 
 export default function Nav() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const history = useHistory();
+
+  const navigateTo = (url: string) => {
+    if (url !== window.location.pathname) {
+      history.push(url);
+      setMenuOpen(false);
+    }
+  }
+
+  const { pathname } = window.location;
+  const activeRoute = {
+    home: pathname === '/',
+    wallets: pathname === '/wallets',
+    globalStats: pathname === '/global-stats',
+    donations: pathname === '/donations'
+  }
+
+  const activeIcon = (active: boolean) => {
+    if(active) {
+      return <Icon icon="compass" />
+    }
+  }
 
   return (
-    <Navbar className="bp3-dark" fixedToTop={true}>
-      <Navbar.Group align={Alignment.LEFT}>
-        <Button className="bp3-minimal" onClick={() => setMenuOpen(!menuOpen)} icon={menuOpen ? 'menu-open' : 'menu'} />
-      </Navbar.Group>
-      <Navbar.Group align={Alignment.RIGHT}>
-        <Navbar.Heading>Smart Ledger</Navbar.Heading>
-      </Navbar.Group>
-    </Navbar>
+    <span>
+      <Navbar className="bp3-dark" fixedToTop={true}>
+        <Navbar.Group onClick={() => setMenuOpen(!menuOpen)} align={Alignment.LEFT}>
+          <Button className="bp3-minimal" icon={menuOpen ? 'menu-open' : 'menu'} />
+          <Navbar.Heading>{ activeRoute.wallets ? 'Wallets' : activeRoute.globalStats ? 'Global Stats' : activeRoute.donations ? 'Donations' : 'Smart Ledger'}</Navbar.Heading>
+        </Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT}>
+        </Navbar.Group>
+      </Navbar>
+      <Drawer 
+        isOpen={menuOpen}
+        position="left"
+        size={200}
+        title="Smart Ledger"
+        canOutsideClickClose={true}
+        onClose={() => setMenuOpen(false)}
+        >
+        <div className={Classes.DRAWER_BODY}>
+          <div className={Classes.DIALOG_BODY}>
+            <div onClick={() => navigateTo('/')} style={activeRoute.home ? {color: 'white'}  : {opacity: 1}} className='nav-item'>
+              <div className={activeRoute.home ? 'active-left' : ''}>{activeIcon(activeRoute.home)}<span>Home</span></div><Icon icon="home" /></div>
+            <div onClick={() => navigateTo('/wallets')} style={activeRoute.wallets ? {color: 'white'}  : {opacity: 1}} className='nav-item'>
+              <div className={activeRoute.wallets ? 'active-left' : ''}>{activeIcon(activeRoute.wallets)}<span>Wallets</span></div> <Icon icon="credit-card" /></div>
+            <div onClick={() => navigateTo('/global-stats')} style={activeRoute.globalStats ? {color: 'white'}  : {opacity: 1}} className='nav-item'>
+              <div className={activeRoute.globalStats ? 'active-left' : ''}>{activeIcon(activeRoute.globalStats)}<span>Golbal Stats</span></div> <Icon icon="panel-stats" /></div>
+            <div onClick={() => navigateTo('/donations')} style={activeRoute.donations ? {color: 'white'}  : {opacity: 1}} className='nav-item'>
+              <div className={activeRoute.donations ? 'active-left' : ''}>{activeIcon(activeRoute.donations)}<span>Donations</span></div> <Icon icon="thumbs-up" /></div>
+          </div>
+        </div>
+      </Drawer>
+    </span>
   )
 }
