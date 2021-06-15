@@ -33,7 +33,7 @@ export default function Nav() {
   return (
     <span>
       <Navbar className="bp3-dark" fixedToTop={true}>
-        <Navbar.Group onClick={() => setMenuOpen(!menuOpen)} align={Alignment.LEFT}>
+        <Navbar.Group className="left" onClick={() => setMenuOpen(!menuOpen)} align={Alignment.LEFT}>
           <Button className="bp3-minimal" icon={menuOpen ? 'menu-open' : 'menu'} />
           <Navbar.Heading>{ activeRoute.wallets ? 'Wallets' : activeRoute.globalStats ? 'Global Stats' : activeRoute.donations ? 'Donations' : 'Smart Ledger'}</Navbar.Heading>
         </Navbar.Group>

@@ -1,7 +1,7 @@
 .filter-container {
   display: flex;
-  padding: 0 10%;
-  justify-content: space-around;
+  padding: 0 12px;
+  justify-content: center;
   flex-wrap: wrap;
   .filter {
     display: block;
@@ -9,11 +9,12 @@
     font-family: sans-serif;
     font-weight: 700;
     color: #444;
-    line-height: .75;
+    line-height: 1.25;
+    border-radius: 2px;
     padding: .6em 1.4em .5em .8em;
-    width: 300px;
+    width: 150px;
     box-sizing: border-box;
-    margin: 12px 0;
+    margin: 12px;
     text-align-last: center;
     border: 1px solid #aaa;
     box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
@@ -26,6 +27,10 @@
     background-repeat: no-repeat, repeat;
     background-position: right .7em top 50%, 0 0;
     background-size: .65em auto, 100%;
+    @media only screen and (max-width: 600px) {
+      width: 90px;
+      font-size: 12px;
+    }
   }
   .filter::-ms-expand {
     display: none;
