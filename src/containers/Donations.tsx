@@ -3,7 +3,7 @@ import img from '../assets/qr.png';
 import './stylesheets/donations.scss';
 import { Toaster } from '@blueprintjs/core';
 
-const toaster = Toaster.create();
+const toaster = Toaster.create({position: 'bottom'});
 
 export default function Donations() {
   const copyAddress = () => {

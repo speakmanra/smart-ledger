@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { InputGroup, Button, Icon, Spinner } from '@blueprintjs/core';
 import TxnTable from '../components/TxnTable';
@@ -7,16 +8,21 @@ import './stylesheets/home.scss'
 
 
 export default function Home() {
+  const { search } = useLocation();
+  const walletParam = search.length ? search.replace('?wallet=', '') : null;
 
   const [apiData, setApiData] = useState<null | {data: any }>(null);
   // const [bnbPriceData, setBnbPrice] = useState<null | {data: number }>(null);
   const [bnbPriceData, setBnbPrice] = useState(300);
   const [query, setQuery] = useState('');
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState(walletParam ? walletParam : '');
   const [hasSearched, setHasSearched] = useState(false);
   const [startBlock, setStartBlock] = useState('1');
   const [endBlock, setEndBlock] = useState('99999999');
   const [blockchain, setBlockchain] = useState('ether');
+  const [isApiError, setApiError] = useState(false);
+
+  const divider = 1000000000000000000;
 
   const bscApiKey = '2MDRS9PJ1M4TYXHIKMIPP5WQF9F1A85ITG';
   const ethApiKey = 'FRGT3H8E4TFNM3G55MT1QHMBV7KP2DRDXT';
@@ -42,13 +48,14 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       setApiData(null);
+      setApiError(false);
       if (query.length) {
         const axiosData = await axios(query);
         if (axiosData.data.status > 0) {
           const sortedData = axiosData.data.result.reverse();
           setApiData({ data: sortedData });
         } else {
-          console.log('Error')
+          setApiError(true);
         }
       }
     }
@@ -62,8 +69,6 @@ export default function Home() {
   //   }
   //   fetchData();
   // }, []);
-
-  const divider = 1000000000000000000;
 
   const calculateFee = (gasPrice: number, gasUsed: number) => {
     return (gasPrice / divider) * gasUsed
@@ -104,13 +109,19 @@ export default function Home() {
           changeEndingBlock={(selection: any) => setEndBlock(selection)}
         />
       </div>
+      {isApiError && <div className="input-address-message">
+        <div>
+          <Icon icon="cross" iconSize={60} intent="primary" />
+        </div>
+        The address you entered has no transactions.
+      </div>}
       {showInputAddressMessage && <div className="input-address-message">
-        Enter a wallet address to see your transactions.
         <div>
           <Icon icon="bank-account" iconSize={60} intent="primary" />
         </div>
+        Enter a wallet address to see your transactions.
       </div>}
-      {dataLoading && !showInputAddressMessage && <div className="loading">
+      {dataLoading && !showInputAddressMessage && !isApiError && <div className="loading">
         <Spinner intent="primary" size={100} />
       </div>}
       {!dataLoading && !showInputAddressMessage && <div>
