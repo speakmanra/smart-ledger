@@ -1,0 +1,31 @@
+.container {
+  color: #e7dbda;
+  margin-top: 50px;
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    li {
+      background: rgba(61, 74, 88, 0.5);
+      height: 80px;
+      margin: 0;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 1px 1px gray;
+      .add-address {
+        width: 300px;
+      }
+      .address {
+        margin: 0;
+        font-size: 14px;
+        text-align: left;
+      }
+    }
+  }
+}
+
+#name-field {
+  margin-bottom: 6px;
+}
