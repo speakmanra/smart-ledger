@@ -29,7 +29,7 @@ export default function Filters(props: any) {
     <div className="filter-container">
       <div className="block">
         <p>Blockchain</p>
-        <select onChange={e => props.changeBlockchain(e.target.value)} className="filter">
+        <select value={props.blockchain} onChange={e => props.changeBlockchain(e.target.value)} className="filter">
           {blockchainOptions.map((bc: any) => {
             return <option key={bc.id} value={bc.id}>{bc.name}</option>
           })}

@@ -24,9 +24,9 @@ function App() {
             <Nav />
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/wallets" component={Wallets} />
-              <Route path="/global-stats" component={GlobalStats} />
-              <Route path="/donations" component={Donations} />
+              <Route path="/wallets" exact component={Wallets} />
+              <Route path="/global-stats" exact component={GlobalStats} />
+              <Route path="/donations" exact component={Donations} />
             </Switch>
           </main>
       </Router>

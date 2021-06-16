@@ -1,11 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { Navbar, Button, Alignment, Drawer, Classes, Icon } from '@blueprintjs/core';
 import img from '../assets/logo512.png'
 import './stylesheets/navbar.scss';
 
 export default function Nav() {
+  let activeRouteInit = {
+    home: false,
+    wallets: false,
+    globalStats: false,
+    donations: false
+  }
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeRoute, setActiveRoute] = useState(activeRouteInit);
 
   const history = useHistory();
 
@@ -16,13 +24,18 @@ export default function Nav() {
     }
   }
 
-  const { pathname } = window.location;
-  const activeRoute = {
-    home: pathname === '/',
-    wallets: pathname === '/wallets',
-    globalStats: pathname === '/global-stats',
-    donations: pathname === '/donations'
-  }
+  useEffect(() => {
+    history.listen((location) => { 
+      const { pathname } = location;
+        const routes = {
+          home: pathname === '/',
+          wallets: pathname === '/wallets',
+          globalStats: pathname === '/global-stats',
+          donations: pathname === '/donations'
+        }
+        setActiveRoute(routes);
+      }) 
+    }, [history]);
 
   const activeIcon = (active: boolean) => {
     if(active) {
