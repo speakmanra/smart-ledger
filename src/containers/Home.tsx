@@ -8,18 +8,16 @@ import './stylesheets/home.scss'
 
 
 export default function Home() {
-  const { search } = useLocation();
-  const walletParam = search.length ? search.replace('?wallet=', '') : null;
 
   const [apiData, setApiData] = useState<null | {data: any }>(null);
   // const [bnbPriceData, setBnbPrice] = useState<null | {data: number }>(null);
   const [bnbPriceData, setBnbPrice] = useState(300);
   const [query, setQuery] = useState('');
-  const [walletAddress, setWalletAddress] = useState(walletParam ? walletParam : '');
+  const [walletAddress, setWalletAddress] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [startBlock, setStartBlock] = useState('1');
   const [endBlock, setEndBlock] = useState('99999999');
-  const [blockchain, setBlockchain] = useState('ether');
+  const [blockchain, setBlockchain] = useState('');
   const [isApiError, setApiError] = useState(false);
 
   const divider = 1000000000000000000;
@@ -32,7 +30,7 @@ export default function Home() {
     <Icon color={'#000'} intent="primary" icon='search' />
     )
   
-  const searchButton = (
+  const clearButton = (
     <Button onClick={() => setWalletAddress('')} minimal={true} intent="primary" icon={!walletAddress ? null : 'cross'} />
   )
 
@@ -42,11 +40,38 @@ export default function Home() {
     setHasSearched(true);
     const apiKey = blockchain === 'bsc' ? bscApiKey : ethApiKey;
     const domain = blockchain === 'bsc' ? 'com' : 'io';
-    setQuery(`https://api.${blockchain}scan.${domain}/api?module=account&action=tokentx&address=${walletAddress}&startblock=${startBlock}&endblock=${endBlock}&sort=${sortOption}&apikey=${apiKey}`)
+    setQuery(`https://api.${blockchain}scan.${domain}/api?module=account&action=tokentx&address=${walletAddress}&startblock=${startBlock}&endblock=${endBlock}&sort=${sortOption}&apikey=${apiKey}`);
   }
+
+  const { search } = useLocation();
+  let params = search.length ? search.replace('?wallet=', '') : null;
+
+  useEffect(() => {
+      const checkParams = () => {
+      if (params) {
+        const paramArr = params.split('&');
+        setBlockchain(paramArr[1]);
+        setWalletAddress(paramArr[0]);
+        setHasSearched(true);
+      }
+    }
+    checkParams();
+  }, [])
+
+  useEffect(() => {
+    const queryChange = () => {
+      const apiKey = blockchain === 'bsc' ? bscApiKey : ethApiKey;
+      const domain = blockchain === 'bsc' ? 'com' : 'io';
+      setQuery(`https://api.${blockchain}scan.${domain}/api?module=account&action=tokentx&address=${walletAddress}&startblock=${startBlock}&endblock=${endBlock}&sort=${sortOption}&apikey=${apiKey}`);
+    }
+    queryChange();
+  }, [blockchain, startBlock, endBlock])
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!!!walletAddress) {
+        return;
+      }
       setApiData(null);
       setApiError(false);
       if (query.length) {
@@ -55,6 +80,7 @@ export default function Home() {
           const sortedData = axiosData.data.result.reverse();
           setApiData({ data: sortedData });
         } else {
+          console.log('error')
           setApiError(true);
         }
       }
@@ -84,6 +110,18 @@ export default function Home() {
     return totalFees;
   }
 
+  const handleFilterChange = (filter: string, selection: string) => {
+    switch (filter) {
+      case 'blockchain': setBlockchain(selection); break;
+      case 'startBlock': setStartBlock(selection); break;
+      case 'endBlock': setEndBlock(selection); break;
+      default: break;
+    }
+    if (walletAddress) {
+      setHasSearched(true);
+    }
+  }
+
   let dataLoading = !!!apiData;
   let showInputAddressMessage = !hasSearched;
 
@@ -94,7 +132,7 @@ export default function Home() {
           <InputGroup 
           placeholder="Address..."
           leftElement={searchIcon}
-          rightElement={searchButton}
+          rightElement={clearButton}
           large={true}
           fill={true}
           onSubmit={(e: React.ChangeEvent<HTMLInputElement>) => e.currentTarget.blur()}
@@ -104,9 +142,10 @@ export default function Home() {
       </div>
       <div className="filters">
         <Filters 
-          changeBlockchain={(selection: any) => setBlockchain(selection)} 
-          changeStartingBlock={(selection: any) => setStartBlock(selection)} 
-          changeEndingBlock={(selection: any) => setEndBlock(selection)}
+          blockchain={blockchain}
+          changeBlockchain={(selection: any) => handleFilterChange('blockchain', selection)} 
+          changeStartingBlock={(selection: any) => handleFilterChange('startBlock', selection)} 
+          changeEndingBlock={(selection: any) => handleFilterChange('endBlock', selection)}
         />
       </div>
       {isApiError && <div className="input-address-message">
@@ -115,7 +154,7 @@ export default function Home() {
         </div>
         The address you entered has no transactions.
       </div>}
-      {showInputAddressMessage && <div className="input-address-message">
+      {showInputAddressMessage && !isApiError && <div className="input-address-message">
         <div>
           <Icon icon="bank-account" iconSize={60} intent="primary" />
         </div>

@@ -3,13 +3,24 @@ import { useHistory } from 'react-router-dom';
 import { Icon, InputGroup } from '@blueprintjs/core';
 import './stylesheets/wallets.scss';
 import { Toaster } from '@blueprintjs/core';
-import { withRouter } from "react-router";
 
 const toaster = Toaster.create({position: 'bottom'});
 
+const blockchainOptions = [
+  {
+    name: 'Ethereum',
+    id: 'ether',
+  },
+  {
+    name: 'Binance Smart Chain',
+    id: 'bsc'
+  }
+]
+
 interface IWallet {
   name: string;
-  address: string
+  address: string,
+  blockchain: string
 }
 
 export default function Wallets() {
@@ -18,11 +29,12 @@ export default function Wallets() {
   const [walletArray, setWalletArray] = useState<IWallet[]>(ls ? parsedLS : []);
   const [walletAddress, setWalletAddress] = useState('');
   const [walletName, setWalletName] = useState('');
+  const [blockchain, setBlockchain] = useState('ether');
 
   const history = useHistory();
 
   const goToWallet = (wallet: IWallet) => {
-    history.push(`/?wallet=${wallet.address}`);
+    history.push(`/?wallet=${wallet.address}&${wallet.blockchain}`);
   }
   
   const showToast = (message: string) => {
@@ -31,17 +43,17 @@ export default function Wallets() {
 
   const removeWallet = (wallet: IWallet, e: any)=> {
     e.stopPropagation();
-    setWalletArray(walletArray.filter(item => item.address !== wallet.address));
-    localStorage.setItem('wallets', JSON.stringify(walletArray.filter(item => item.address !== wallet.address)));
+    setWalletArray(walletArray.filter(item => item !== wallet));
+    localStorage.setItem('wallets', JSON.stringify(walletArray.filter(item => item !== wallet)));
   }
 
   const addWallet = ()=> {
-    const walletToAdd = {name: walletName, address: walletAddress};
+    const walletToAdd = {name: walletName, address: walletAddress, blockchain};
     if (!walletAddress.length || !walletName.length) {
       showToast('Wallet name and address are required!')
       return;
     }
-    const foundWallet = walletArray.filter(item => item.address === walletAddress)
+    const foundWallet = walletArray.filter(item => item.address === walletAddress && item.blockchain === blockchain)
     if (foundWallet.length === 0) {
       setWalletArray([...walletArray, walletToAdd])
       setWalletAddress('');
@@ -56,28 +68,35 @@ export default function Wallets() {
   return (
     <div className="container">
       <ul>
-        <li>
+        <li className="add-container">
           <div className="add-address">
-            <InputGroup 
-              id="name-field"
-              placeholder="Name..."
-              value={walletName}
-              onChange={e => setWalletName(e.target.value)} />
+            <div className="top">
+              <InputGroup 
+                id="name-field"
+                placeholder="Name..."
+                value={walletName}
+                onChange={e => setWalletName(e.target.value)} />
+              <select onChange={e => setBlockchain(e.target.value)} className="filter">
+                {blockchainOptions.map((bc: any) => {
+                  return <option key={bc.id} value={bc.id}>{bc.name}</option>
+                })}
+              </select>
+            </div>
             <InputGroup 
                 placeholder="Address..."
                 value={walletAddress}
                 onChange={e => setWalletAddress(e.target.value)} />
           </div>
-          <Icon onClick={() => addWallet()} icon="add" />
+          <Icon iconSize={24} onClick={() => addWallet()} icon="add" />
         </li>
         {walletArray.map((wallet: IWallet, i) => {
           return (
-            <li key={i} onClick={() => goToWallet(wallet)}>
+            <li className="row" key={i} onClick={() => goToWallet(wallet)}>
               <div className="address-group">
-                <p className="address">{wallet.name}</p>
+                <p className="name">{wallet.name}</p>
                 <p className="address">{wallet.address}</p>
               </div>
-              <Icon onClick={e => removeWallet(wallet, e)} icon="trash" />
+              <Icon id="delete-button" onClick={e => removeWallet(wallet, e)} icon="trash" />
             </li>
           )
         })}
