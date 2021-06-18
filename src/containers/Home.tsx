@@ -54,7 +54,7 @@ export default function Home() {
         setApiError(false);
         const response = await axios({
           method: "POST",
-          url: "/getBlockExpData",
+          url: process.env.NODE_ENV === "development" ? "/getBlockExpData" : "https://ubjvphyzza.execute-api.us-east-2.amazonaws.com/prod/getBlockExpData",
           data: {
             startBlock,
             endBlock,
@@ -101,7 +101,7 @@ export default function Home() {
         setApiError(false);
         const response = await axios({
           method: "POST",
-          url: "/getBlockExpData",
+          url: process.env.NODE_ENV === "development" ? "/getBlockExpData" : "https://ubjvphyzza.execute-api.us-east-2.amazonaws.com/prod/getBlockExpData",
           data: {
             startBlock,
             endBlock,

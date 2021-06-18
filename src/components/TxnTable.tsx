@@ -74,7 +74,7 @@ export default function TxnTable(props: any) {
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
                   {/* <td className="name-col">{formatName(txns.tokenName)}</td> */}
-                  <td className="amount-col">{formatValue(txns.value)} ETH</td>
+                  <td className="amount-col">{formatValue(txns.value)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'}</td>
                   <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
