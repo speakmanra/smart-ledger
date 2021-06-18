@@ -18,8 +18,9 @@ export default function Donations() {
 
   return (
     <div onClick={() => copyAddress()} className="address-container">
-      <p className="address">0xec74205E8A0bF943131e9781229311BeBf3636d8</p>
+      <p className="message">If you have enjoyed using Smart Ledger, feel free to donate whatever you can afford to your friendly neighborhood dev. :)</p>
       <img className="qr" src={img} alt=""/>
+      <p className="address">0xec74205E8A0bF943131e9781229311BeBf3636d8</p>
     </div>
   )
 }
