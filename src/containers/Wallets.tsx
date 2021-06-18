@@ -89,6 +89,13 @@ export default function Wallets() {
           </div>
           <Icon iconSize={24} onClick={() => addWallet()} icon="add" />
         </li>
+        {walletArray.length < 1 && 
+        <div className="input-address-message">
+          <div>
+          <Icon icon="credit-card" iconSize={60} intent="primary" />
+          </div>
+          Save a wallet to quickly view your transactions.
+        </div>}
         {walletArray.map((wallet: IWallet, i) => {
           return (
             <li className="row" key={i} onClick={() => goToWallet(wallet)}>
