@@ -50,20 +50,32 @@ export default function TxnTable(props: any) {
         <thead>
           <tr>
             <th className="time-col">Time</th>
-            <th className="name-col">Token Name</th>
+            {props.txnType === 'tokens' && <th className="name-col">Token Name</th>}
             <th className="amount-col">Transaction Amount</th>
             <th className="fee-col">Fees</th>
           </tr>
         </thead>
         <tbody>
-          {props.tokenTransactions.map((txns: any, i: number) => {
+          {props.txnType === 'tokens' && props.tokenTransactions.map((txns: any, i: number) => {
             if (txns.value > 0) {
               return (
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
                   <td className="name-col">{formatName(txns.tokenName)}</td>
                   <td className="amount-col">{formatValue(txns.value)} {txns.tokenSymbol}</td>
-                  <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} BNB (${(props.bnbPrice * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
+                  <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
+                </tr>
+              )
+            }
+          })}
+          {props.txnType === 'normal' && props.normalTransactions.map((txns: any, i: number) => {
+            if (txns.value > 0) {
+              return (
+                <tr key={i}>
+                  <td className="time-col">{getTime(txns.timeStamp)}</td>
+                  {/* <td className="name-col">{formatName(txns.tokenName)}</td> */}
+                  <td className="amount-col">{formatValue(txns.value)} ETH</td>
+                  <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
             }

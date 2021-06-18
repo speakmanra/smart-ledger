@@ -25,6 +25,17 @@ export default function Filters(props: any) {
   const ascArr = getNumbers(true);
   const decArr = getNumbers(false);
 
+  const txnTypeOptions = [
+    {
+      name: 'Normal',
+      id: 'normal',
+    },
+    {
+      name: 'Tokens',
+      id: 'tokens'
+    }
+  ]
+
   return (
     <div className="filter-container">
       <div className="block">
@@ -50,6 +61,15 @@ export default function Filters(props: any) {
           {decArr.map(num => {
             return <option key={num} value={num}>{num}</option>})
           }
+        </select>
+      </div>
+
+      <div className="block">
+        <p>Transaction Type</p>
+        <select value={props.txnType} onChange={e => props.changeTxnType(e.target.value)} className="filter">
+          {txnTypeOptions.map((type: any) => {
+            return <option key={type.id} value={type.id}>{type.name}</option>
+          })}
         </select>
       </div>
     </div>

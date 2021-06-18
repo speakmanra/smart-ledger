@@ -15,7 +15,7 @@
     width: 150px;
     box-sizing: border-box;
     margin: 12px;
-    text-align-last: center;
+    text-align-last: left;
     border: 1px solid #aaa;
     box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
     -moz-appearance: none;
@@ -28,7 +28,7 @@
     background-position: right .7em top 50%, 0 0;
     background-size: .65em auto, 100%;
     @media only screen and (max-width: 600px) {
-      width: 90px;
+      width: 120px;
       font-size: 12px;
     }
   }
