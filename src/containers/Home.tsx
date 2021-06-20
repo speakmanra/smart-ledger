@@ -151,12 +151,12 @@ export default function Home() {
       const checkParams = () => {
       if (params) {
         const paramArr = params.split('&');
-        setBlockchain(paramArr[1]);
         setWalletAddress(paramArr[0].toLowerCase());
+        setBlockchain(paramArr[1]);
         setHasSearched(true);
       } else if (!!account) {
-        setBlockchain(chainId === 1 ? 'ether' : chainId === 56 ? 'bsc' : '');
         setWalletAddress(account);
+        setBlockchain(chainId === 1 ? 'ether' : chainId === 56 ? 'bsc' : '');
         setHasSearched(true);
       }
     }
@@ -194,7 +194,7 @@ export default function Home() {
       }
     }
       requestData();
-  }, [blockchain, startBlock, endBlock])
+  }, [blockchain, hasSearched])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -243,6 +243,9 @@ export default function Home() {
   let dataLoading = !!!tokenData || !!!normalData;
   let showInputAddressMessage = !hasSearched;
   let priceData = !!bnbPriceData && !!ethPriceData;
+  console.log(dataLoading)
+  console.log(tokenData)
+  console.log(normalData)
 
   return (
     <div className="home-container">
