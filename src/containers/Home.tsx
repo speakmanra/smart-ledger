@@ -279,8 +279,8 @@ export default function Home() {
         <div>
           <Icon icon="bank-account" iconSize={60} intent="primary" />
         </div>
-        Enter a wallet address or connect to MetaMask to see your transactions.
-        {connectShowing && <Button className="connect-button" onClick={() => connectWallet()}>Connect Wallet</Button>}
+        Enter a wallet address <span className="no-mobile">or connect to MetaMask</span> to see your transactions.
+        {connectShowing && <span className="no-mobile"><Button className="connect-button" onClick={() => connectWallet()}>Connect Wallet</Button></span>}
       </div>}
       {dataLoading && !showInputAddressMessage && !isApiError && <div className="loading">
         <Spinner intent="primary" size={100} />
