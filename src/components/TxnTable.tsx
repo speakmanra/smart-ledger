@@ -26,7 +26,7 @@ export default function TxnTable(props: any) {
   }
 
   const calculateFee = (gasPrice: number, gasUsed: number) => {
-    return (gasPrice / divider) * gasUsed
+    return (gasPrice * gasUsed) / divider
   }
 
   const getTime = (epochTime: number) => {
@@ -44,6 +44,8 @@ export default function TxnTable(props: any) {
     return `${formattedDate} ${formattedTime}`;
   }
 
+
+  console.log(props.price);
   return (
     <div className="table-container">
       <table className="bp3-html-table">
@@ -57,7 +59,6 @@ export default function TxnTable(props: any) {
         </thead>
         <tbody>
           {props.txnType === 'tokens' && props.tokenTransactions.map((txns: any, i: number) => {
-            if (txns.value > 0) {
               return (
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
@@ -66,10 +67,9 @@ export default function TxnTable(props: any) {
                   <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
-            }
+            
           })}
           {props.txnType === 'normal' && props.normalTransactions.map((txns: any, i: number) => {
-            if (txns.value > 0) {
               return (
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
@@ -78,7 +78,7 @@ export default function TxnTable(props: any) {
                   <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
-            }
+            
           })}
         </tbody>
       </table>
