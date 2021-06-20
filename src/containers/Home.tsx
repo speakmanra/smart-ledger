@@ -50,7 +50,6 @@ export default function Home() {
   const [isApiError, setApiError] = useState(false);
   const [connectShowing, setConnectShowing] = useState(false);
 
-  // console.log(web3);
   // Variables
 
   const divider = 1000000000000000000;
@@ -243,9 +242,6 @@ export default function Home() {
   let dataLoading = !!!tokenData || !!!normalData;
   let showInputAddressMessage = !hasSearched;
   let priceData = !!bnbPriceData && !!ethPriceData;
-  console.log(dataLoading)
-  console.log(tokenData)
-  console.log(normalData)
 
   return (
     <div className="home-container">
