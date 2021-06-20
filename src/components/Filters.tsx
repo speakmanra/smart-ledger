@@ -7,7 +7,7 @@ import './stylesheets/filters.scss';
     id: 'ether',
   },
   {
-    name: 'Binance Smart Chain',
+    name: 'BSC',
     id: 'bsc'
   }
 ]
@@ -22,8 +22,8 @@ const getNumbers = (asc: boolean) => {
 
 export default function Filters(props: any) {
 
-  const ascArr = getNumbers(true);
-  const decArr = getNumbers(false);
+  // const ascArr = getNumbers(true);
+  // const decArr = getNumbers(false);
 
   const txnTypeOptions = [
     {
@@ -46,7 +46,7 @@ export default function Filters(props: any) {
           })}
         </select>
       </div>
-      <div className="block">
+      {/* <div className="block">
         <p>Starting Block</p>
         <select onChange={e => props.changeStartingBlock(e.target.value)} className="filter">
           {ascArr.map(num => {
@@ -62,7 +62,7 @@ export default function Filters(props: any) {
             return <option key={num} value={num}>{num}</option>})
           }
         </select>
-      </div>
+      </div> */}
 
       <div className="block">
         <p>Transaction Type</p>
