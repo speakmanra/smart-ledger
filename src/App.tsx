@@ -12,7 +12,6 @@ import GlobalStats from './containers/GlobalStats';
 import Donations from './containers/Donations';
 
 import { FocusStyleManager } from "@blueprintjs/core";
- 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 function App() {
@@ -29,7 +28,7 @@ function App() {
               <Route path="/donations" exact component={Donations} />
             </Switch>
           </main>
-      </Router>
+        </Router>
     </div>
   );
 }

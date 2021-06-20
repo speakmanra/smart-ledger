@@ -3,15 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+
+function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(provider)
+  library.pollingInterval = 12000
+  return library
+}
 
 // import "normalize.css";
 // import "@blueprintjs/core/lib/css/blueprint.css";
 // import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 ReactDOM.render(
-  <React.Fragment>
+  <Web3ReactProvider getLibrary={getLibrary}>
     <App />
-  </React.Fragment>,
+  </Web3ReactProvider>,
   document.getElementById('root')
 );
 

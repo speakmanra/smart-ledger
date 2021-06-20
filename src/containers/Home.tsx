@@ -4,10 +4,36 @@ import axios from 'axios';
 import { InputGroup, Button, Icon, Spinner } from '@blueprintjs/core';
 import TxnTable from '../components/TxnTable';
 import Filters from '../components/Filters';
-import './stylesheets/home.scss'
+import './stylesheets/home.scss';
 
+import { useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers';
+
+import { injected } from '../connectors';
+import { useEagerConnect, useInactiveListener } from '../hooks/web3';
 
 export default function Home() {
+
+  // Web3 Setup (metamask only for now) ============================= ============================= =============
+
+  const context = useWeb3React<Web3Provider>()
+  const { connector, chainId, account, active } = context;
+
+  // handle logic to recognize the connector currently being activated
+  const [activatingConnector, setActivatingConnector] = useState<any>()
+  useEffect(() => {
+    if (activatingConnector && activatingConnector === connector) {
+      setActivatingConnector(undefined)
+    }
+  }, [activatingConnector, connector])
+
+  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
+  const triedEager = useEagerConnect()
+
+  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
+  useInactiveListener(!triedEager || !!activatingConnector);
+
+  // **END** Web3 Setup ============================= ============================= =============================
 
   //State
 
@@ -15,14 +41,16 @@ export default function Home() {
   const [normalData, setNormalData] = useState<null | {data: any }>(null);
   const [bnbPriceData, setBnbPrice] = useState<null | {data: number }>(null);
   const [ethPriceData, setEthPrice] = useState<null | {data: number }>(null);
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState<any>(account || '');
   const [hasSearched, setHasSearched] = useState(false);
   const [startBlock, setStartBlock] = useState('1');
   const [endBlock, setEndBlock] = useState('99999999');
-  const [blockchain, setBlockchain] = useState('');
+  const [blockchain, setBlockchain] = useState('ether');
   const [txnType, setTxnType] = useState('normal');
   const [isApiError, setApiError] = useState(false);
+  const [connectShowing, setConnectShowing] = useState(false);
 
+  // console.log(web3);
   // Variables
 
   const divider = 1000000000000000000;
@@ -39,6 +67,46 @@ export default function Home() {
   )
 
   // Effects
+
+  useEffect(() => {
+    if (active) {
+      setConnectShowing(false);
+      setWalletAddress(account);
+      setHasSearched(true);
+      const requestData = async (wallet: any) => {
+        try {
+          setNormalData(null);
+          setTokenData(null);
+          setApiError(false);
+          const response = await axios({
+            method: "POST",
+            url: process.env.NODE_ENV === "development" ? "/getBlockExpData" : "https://ubjvphyzza.execute-api.us-east-2.amazonaws.com/prod/getBlockExpData",
+            data: {
+              startBlock,
+              endBlock,
+              wallet,
+              sortOption,
+              blockchain
+            }
+          })
+          const sortedNormalData = response.data.txn.reverse();
+          const sortedTokenData = response.data.token.reverse();
+          setNormalData({data: sortedNormalData}); 
+          setTokenData({data: sortedTokenData}); 
+          setApiError(false);
+        } catch (err) {
+          console.log(err);
+          setApiError(true);
+        }
+      }
+      if ((chainId === 1 && blockchain === 'ether') || (chainId === 56 && blockchain === 'bsc')) {
+        requestData(account);
+      }
+      setBlockchain(chainId === 1 ? 'ether' : chainId === 56 ? 'bsc' : '');
+    } else {
+      setConnectShowing(true);
+    }
+  },[account, chainId])
 
   const submitAddress = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,6 +135,7 @@ export default function Home() {
         const sortedTokenData = response.data.token.reverse();
         setNormalData({data: sortedNormalData}); 
         setTokenData({data: sortedTokenData}); 
+        setApiError(false);
       } catch (err) {
         console.log(err);
         setApiError(true);
@@ -85,10 +154,14 @@ export default function Home() {
         setBlockchain(paramArr[1]);
         setWalletAddress(paramArr[0].toLowerCase());
         setHasSearched(true);
+      } else if (!!account) {
+        setBlockchain(chainId === 1 ? 'ether' : chainId === 56 ? 'bsc' : '');
+        setWalletAddress(account);
+        setHasSearched(true);
       }
     }
     checkParams();
-  }, [])
+  }, [params])
 
   useEffect(() => {
     const requestData = async () => {
@@ -114,6 +187,7 @@ export default function Home() {
         const sortedTokenData = response.data.token.reverse();
         setNormalData({data: sortedNormalData}); 
         setTokenData({data: sortedTokenData}); 
+        setApiError(false);
       } catch (err) {
         console.log(err);
         setApiError(true);
@@ -133,6 +207,9 @@ export default function Home() {
   }, []);
 
   // Functions
+  const connectWallet = () => {
+    context.activate(injected);
+  }
 
   const calculateFee = (gasPrice: number, gasUsed: number) => {
     return (gasPrice / divider) * gasUsed
@@ -141,7 +218,7 @@ export default function Home() {
   const getTotalFees = (txns: any) => {
     let totalFees = 0;
     txns.forEach((txn: any) => {
-      if (txn.from === walletAddress) {
+      if (txn.from.toLowerCase() === walletAddress.toLowerCase()) {
         const fee = calculateFee(txn.gasPrice, txn.gasUsed)
         totalFees += fee;
       }
@@ -202,13 +279,14 @@ export default function Home() {
         <div>
           <Icon icon="bank-account" iconSize={60} intent="primary" />
         </div>
-        Enter a wallet address to see your transactions.
+        Enter a wallet address or connect to MetaMask to see your transactions.
+        {connectShowing && <Button className="connect-button" onClick={() => connectWallet()}>Connect Wallet</Button>}
       </div>}
       {dataLoading && !showInputAddressMessage && !isApiError && <div className="loading">
         <Spinner intent="primary" size={100} />
       </div>}
       {!dataLoading && !showInputAddressMessage && priceData && <div>
-        <div className="fees">Total Fees: {getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)} ({((blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data) * getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)).toFixed(2)})</div>
+        <div className="fees">Total Fees: {getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)} (${((blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data) * getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)).toFixed(2)})</div>
         <TxnTable blockchain={blockchain} txnType={txnType} price={blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data} normalTransactions={normalData!.data} tokenTransactions={tokenData!.data} />
       </div>}
     </div>
