@@ -12,7 +12,7 @@ const blockchainOptions = [
     id: 'ether',
   },
   {
-    name: 'Binance Smart Chain',
+    name: 'BSC',
     id: 'bsc'
   }
 ]
