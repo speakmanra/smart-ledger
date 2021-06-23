@@ -12,15 +12,24 @@ import GlobalStats from './containers/GlobalStats';
 import Donations from './containers/Donations';
 
 import { FocusStyleManager } from "@blueprintjs/core";
+import { useState } from 'react';
 FocusStyleManager.onlyShowFocusOnTabs();
 
 function App() {
+  const ls = localStorage.getItem('contrastMode');
+  const parsedLS = ls ? JSON.parse(ls) : null;
+  const [isDarkMode, setMode] = useState<boolean>(ls ? (parsedLS === 'dark' ? true : false) : true);
+
+  const handleChangeMode = (mode: boolean) => {
+    setMode(mode);
+    localStorage.setItem('contrastMode', JSON.stringify(mode ? 'dark' : 'light'));
+  }
 
   return (
-    <div className="App">
+    <div style={{backgroundColor: isDarkMode ? '#0f1318' : '#e7dbda', color: isDarkMode ? '#e7dbda' : '#0f1318', minHeight: '100vh'}} className="App">
         <Router>
           <main>
-            <Nav />
+            <Nav isDarkMode={isDarkMode} changeContrastMode={(mode: boolean) => handleChangeMode(mode)} />
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/wallets" exact component={Wallets} />

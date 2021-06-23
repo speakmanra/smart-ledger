@@ -1,4 +1,5 @@
-import './stylesheets/txn-table.scss'
+import './stylesheets/txn-table.scss';
+import { Icon } from '@blueprintjs/core';
 
 export default function TxnTable(props: any) {
 
@@ -12,7 +13,7 @@ export default function TxnTable(props: any) {
   
   const formatValue = (value: number) => {
     const formattedNumber = value / divider;
-    return +parseFloat(formattedNumber.toString()).toFixed(8);
+    return +parseFloat(formattedNumber.toString()).toFixed(6);
   }
 
   const formatName = (name: string) => {
@@ -44,11 +45,13 @@ export default function TxnTable(props: any) {
     return `${formattedDate} ${formattedTime}`;
   }
 
-
-  console.log(props.price);
+  const isOutgoing = (txn: any) => {
+    return (txn.from.toLowerCase() === props.wallet.toLowerCase());
+  }
+  
   return (
     <div className="table-container">
-      <table className="bp3-html-table">
+      <table>
         <thead>
           <tr>
             <th className="time-col">Time</th>
@@ -63,8 +66,15 @@ export default function TxnTable(props: any) {
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
                   <td className="name-col">{formatName(txns.tokenName)}</td>
-                  <td className="amount-col">{formatValue(txns.value)} {txns.tokenSymbol}</td>
-                  <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
+                  <td className="amount-col">
+                    <div>
+                      {formatValue(txns.value)} {txns.tokenSymbol}
+                    </div>
+                    <div className={isOutgoing(txns) ? 'out' : 'in'}>
+                      <Icon icon={isOutgoing(txns) ? 'arrow-up' : 'arrow-down'} />
+                    </div>
+                  </td>
+                  <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(7)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
             
@@ -74,7 +84,14 @@ export default function TxnTable(props: any) {
                 <tr key={i}>
                   <td className="time-col">{getTime(txns.timeStamp)}</td>
                   {/* <td className="name-col">{formatName(txns.tokenName)}</td> */}
-                  <td className="amount-col">{formatValue(txns.value)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'}</td>
+                  <td className="amount-col">
+                    <div>
+                      {formatValue(txns.value)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'}
+                    </div>
+                    <div className={isOutgoing(txns) ? 'out' : 'in'}>
+                      <Icon icon={isOutgoing(txns) ? 'arrow-up' : 'arrow-down'} />
+                    </div>
+                  </td>
                   <td className="fee-col">{calculateFee(txns.gasPrice, txns.gasUsed).toFixed(9)} {props.blockchain === 'bsc' ? 'BNB' : 'ETH'} (${(props.price * calculateFee(txns.gasPrice, txns.gasUsed)).toFixed(2)})</td>
                 </tr>
               )
