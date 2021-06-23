@@ -285,8 +285,8 @@ export default function Home() {
         <Spinner intent="primary" size={100} />
       </div>}
       {!dataLoading && !showInputAddressMessage && priceData && <div>
-        <div className="fees">Total Fees: {getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)} (${((blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data) * getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)).toFixed(2)})</div>
-        <TxnTable blockchain={blockchain} txnType={txnType} price={blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data} normalTransactions={normalData!.data} tokenTransactions={tokenData!.data} />
+        <div className="fees">Total Fees Paid: {getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)} (${((blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data) * getTotalFees(txnType === 'normal' ? normalData!.data : tokenData!.data)).toFixed(2)})</div>
+        <TxnTable blockchain={blockchain} wallet={walletAddress} txnType={txnType} price={blockchain == 'bsc' ? bnbPriceData!.data : ethPriceData!.data} normalTransactions={normalData!.data} tokenTransactions={tokenData!.data} />
       </div>}
     </div>
   )
