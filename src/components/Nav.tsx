@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
-import { Navbar, Button, Alignment, Drawer, Classes, Icon } from '@blueprintjs/core';
+import { Navbar, Button, Alignment, Drawer, Classes, Icon, Switch } from '@blueprintjs/core';
 import img from '../assets/logo512.png'
 import './stylesheets/navbar.scss';
 
-export default function Nav() {
+export default function Nav(props: any) {
   let activeRouteInit = {
     home: false,
     wallets: false,
@@ -72,6 +72,9 @@ export default function Nav() {
               <div className={activeRoute.globalStats ? 'active-left' : ''}>{activeIcon(activeRoute.globalStats)}<span>Golbal Stats</span></div> <Icon icon="panel-stats" /></div> */}
             <div onClick={() => navigateTo('/donations')} style={activeRoute.donations ? {color: 'white'}  : {opacity: 1}} className='nav-item'>
               <div className={activeRoute.donations ? 'active-left' : ''}>{activeIcon(activeRoute.donations)}<span>Donations</span></div> <Icon icon="thumbs-up" /></div>
+            <div className='mode'>
+              <Switch checked={props.isDarkMode} onChange={() => props.changeContrastMode(!props.isDarkMode)} large={true} innerLabel={props.isDarkMode ? 'Dark Mode' : 'Light Mode'} />
+            </div>
           </div>
         </div>
       </Drawer>
