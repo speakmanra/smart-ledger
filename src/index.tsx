@@ -5,12 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import TagManager from 'react-gtm-module';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
   library.pollingInterval = 12000
   return library
 }
+
+const tagManagerArgs = {
+  gtmId: 'GTM-TWCSBXF'
+};
+
+TagManager.initialize(tagManagerArgs)
 
 // import "normalize.css";
 // import "@blueprintjs/core/lib/css/blueprint.css";
