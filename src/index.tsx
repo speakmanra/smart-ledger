@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import TagManager from 'react-gtm-module';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -29,6 +30,8 @@ ReactDOM.render(
   </Web3ReactProvider>,
   document.getElementById('root')
 );
+
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
