@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import { Icon, InputGroup } from '@blueprintjs/core';
 import './stylesheets/wallets.scss';
 import { Toaster } from '@blueprintjs/core';
+import TagManager from 'react-gtm-module';
 
 const toaster = Toaster.create({position: 'bottom'});
 
@@ -32,6 +33,16 @@ export default function Wallets() {
   const [blockchain, setBlockchain] = useState('ether');
 
   const history = useHistory();
+
+  useEffect(() => {
+    TagManager.dataLayer({
+      dataLayer: {
+        event: 'pageview',
+        pagePath: '/wallets',
+        pageTitle: 'Wallets',
+      },
+    })
+  }, [])
 
   const goToWallet = (wallet: IWallet) => {
     history.push(`/?wallet=${wallet.address}&${wallet.blockchain}`);
