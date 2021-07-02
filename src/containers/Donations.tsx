@@ -12,8 +12,8 @@ export default function Donations() {
     TagManager.dataLayer({
       dataLayer: {
         event: 'pageview',
-        pagePath: '/wallets',
-        pageTitle: 'Wallets',
+        pagePath: '/donations',
+        pageTitle: 'Donations',
       },
     })
   }, [])  
