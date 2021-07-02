@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import img from '../assets/qr.png';
 import './stylesheets/donations.scss';
 import { Toaster } from '@blueprintjs/core';
+import TagManager from 'react-gtm-module';
 
 const toaster = Toaster.create({position: 'bottom'});
 
 export default function Donations() {
+
+  useEffect(() => {
+    TagManager.dataLayer({
+      dataLayer: {
+        event: 'pageview',
+        pagePath: '/wallets',
+        pageTitle: 'Wallets',
+      },
+    })
+  }, [])  
+
   const copyAddress = () => {
     const input = document.createElement('textarea');
     input.value = '0xec74205E8A0bF943131e9781229311BeBf3636d8';

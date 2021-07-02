@@ -11,6 +11,7 @@ import { Web3Provider } from '@ethersproject/providers';
 
 import { injected } from '../connectors';
 import { useEagerConnect, useInactiveListener } from '../hooks/web3';
+import TagManager from 'react-gtm-module';
 
 export default function Home() {
 
@@ -196,6 +197,14 @@ export default function Home() {
   }, [blockchain, hasSearched])
 
   useEffect(() => {
+    TagManager.dataLayer({
+      dataLayer: {
+        event: 'pageview',
+        pagePath: '/home',
+        pageTitle: 'Home',
+      },
+    })
+
     const fetchData = async () => {
       const bnbAxiosData = await axios(`https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd`);
       const ethAxiosData = await axios(`https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`);
