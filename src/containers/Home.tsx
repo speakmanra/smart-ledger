@@ -68,6 +68,7 @@ export default function Home() {
 
   // Effects
 
+  // Auto search metamask
   useEffect(() => {
     if (active) {
       setConnectShowing(false);
@@ -120,13 +121,17 @@ export default function Home() {
         setNormalData(null);
         setTokenData(null);
         setApiError(false);
+        let ens = null;
+        if (walletAddress.includes('.eth')) {
+          ens = await context.library?.resolveName(walletAddress);
+        }
         const response = await axios({
           method: "POST",
           url: process.env.NODE_ENV === "development" ? "/getBlockExpData" : "https://ubjvphyzza.execute-api.us-east-2.amazonaws.com/prod/getBlockExpData",
           data: {
             startBlock,
             endBlock,
-            wallet: walletAddress,
+            wallet: ens ? ens : walletAddress,
             sortOption,
             blockchain
           }
@@ -172,13 +177,17 @@ export default function Home() {
         setNormalData(null);
         setTokenData(null);
         setApiError(false);
+        let ens = null;
+        if (walletAddress.includes('.eth')) {
+          ens = await context.library?.resolveName(walletAddress);
+        }
         const response = await axios({
           method: "POST",
           url: process.env.NODE_ENV === "development" ? "/getBlockExpData" : "https://ubjvphyzza.execute-api.us-east-2.amazonaws.com/prod/getBlockExpData",
           data: {
             startBlock,
             endBlock,
-            wallet: walletAddress,
+            wallet: ens ? ens : walletAddress,
             sortOption,
             blockchain
           }
