@@ -20,7 +20,7 @@ export default function Donations() {
 
   const copyAddress = () => {
     const input = document.createElement('textarea');
-    input.value = '0xec74205E8A0bF943131e9781229311BeBf3636d8';
+    input.value = '0x8b1E76E9f3727dDEB842746735eD427Cc93Ac41c';
     document.body.appendChild(input);
     input.select();
     document.execCommand('copy');
